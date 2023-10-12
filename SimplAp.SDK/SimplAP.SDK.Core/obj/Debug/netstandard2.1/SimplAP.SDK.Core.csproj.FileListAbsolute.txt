@@ -1,0 +1,10 @@
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\obj\Debug\netstandard2.1\SimplAP.SDK.Core.csproj.AssemblyReference.cache
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\obj\Debug\netstandard2.1\SimplAP.SDK.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\obj\Debug\netstandard2.1\SimplAP.SDK.Core.AssemblyInfoInputs.cache
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\obj\Debug\netstandard2.1\SimplAP.SDK.Core.AssemblyInfo.cs
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\obj\Debug\netstandard2.1\SimplAP.SDK.Core.csproj.CoreCompileInputs.cache
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\bin\Debug\netstandard2.1\SimplAP.SDK.Core.deps.json
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\bin\Debug\netstandard2.1\SimplAP.SDK.Core.dll
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\bin\Debug\netstandard2.1\SimplAP.SDK.Core.pdb
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\obj\Debug\netstandard2.1\SimplAP.SDK.Core.dll
+C:\Dev\ECoding\SimplAP.SDK\SimplAp.SDK\SimplAP.SDK.Core\obj\Debug\netstandard2.1\SimplAP.SDK.Core.pdb

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SimplAP.SDK</id>
+    <version>1.4.0</version>
+    <title>KoopSQL.CoreModules</title>
+    <authors>KOOPERATIVA poisťovňa, a.s.</authors>
+    <owners>KOOPERATIVA poisťovňa, a.s. Vienna Insurance Group</owners>
+    <projectUrl>http://tfsserver:8080/tfs/VIGSlovakia/Webportal/_git/CoreModules</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Nuget package contains KoopSQL.Core, KoopSQL.EntityFramework, KoopSQL.Services, KoopSQL.Utilities projects.</description>
+    <copyright>Copyright © 2017</copyright>
+    <tags>KoopSQL Utilities EntityFramework Core Services</tags>
+  </metadata>
+  <files>
+    <file src="bin\KoopSQL.Core.dll" target="lib\net461" />
+    <file src="bin\KoopSQL.EntityFramework.dll" target="lib\net461" />
+    <file src="bin\KoopSQL.Services.dll" target="lib\net461" />
+    <file src="bin\KoopSQL.Utilities.dll" target="lib\net461" />
+	<file src="bin\ECoding.SimpleApi.SDK.dll" target="lib\net461" />
+  </files>
+</package>
