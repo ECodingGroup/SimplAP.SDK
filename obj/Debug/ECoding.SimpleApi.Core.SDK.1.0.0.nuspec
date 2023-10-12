@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>ECoding.SimpleApi.Core.SDK</id>
+    <version>1.0.0</version>
+    <authors>ECoding.SimpleApi.Core.SDK</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework=".NETFramework4.8">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="System.Net.Http" version="4.3.4" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net6.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="System.Net.Http" version="4.3.4" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net7.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="System.Net.Http" version="4.3.4" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.IO" targetFramework=".NETFramework4.8" />
+      <frameworkAssembly assemblyName="System.Net.Http" targetFramework=".NETFramework4.8" />
+      <frameworkAssembly assemblyName="System.Runtime" targetFramework=".NETFramework4.8" />
+      <frameworkAssembly assemblyName="System.Security.Cryptography.Algorithms" targetFramework=".NETFramework4.8" />
+      <frameworkAssembly assemblyName="System.Security.Cryptography.Encoding" targetFramework=".NETFramework4.8" />
+      <frameworkAssembly assemblyName="System.Security.Cryptography.Primitives" targetFramework=".NETFramework4.8" />
+      <frameworkAssembly assemblyName="System.Security.Cryptography.X509Certificates" targetFramework=".NETFramework4.8" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="C:\Development\Git\CoreModules\ECoding.SimpleApi.Core.SDK\bin\Debug\net48\ECoding.SimpleApi.Core.SDK.dll" target="lib\net48\ECoding.SimpleApi.Core.SDK.dll" />
+    <file src="C:\Development\Git\CoreModules\ECoding.SimpleApi.Core.SDK\bin\Debug\net6.0\ECoding.SimpleApi.Core.SDK.dll" target="lib\net6.0\ECoding.SimpleApi.Core.SDK.dll" />
+    <file src="C:\Development\Git\CoreModules\ECoding.SimpleApi.Core.SDK\bin\Debug\net7.0\ECoding.SimpleApi.Core.SDK.dll" target="lib\net7.0\ECoding.SimpleApi.Core.SDK.dll" />
+  </files>
+</package>
