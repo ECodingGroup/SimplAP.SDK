@@ -4,6 +4,7 @@
     <id>SimplAP.SDK.Core</id>
     <version>1.0.0</version>
     <title>SimplAP.SDK.Core</title>
+	<license type="expression">MIT</license>
     <authors>Tomáš Filip, Adrián Nagy, Adam Sninčák</authors>
     <owners>ECoding Slovakia s.r.o.</owners>
     <projectUrl>https://github.com/ECodingGroup/SimplAP.SDK</projectUrl>
