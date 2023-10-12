@@ -5,6 +5,11 @@ namespace SimplAP.SDK.Core.Dto
 {
     public class MultiFileProcessingInput
     {
+        public MultiFileProcessingInput(AIModelType modelType) 
+        {
+            ModelType = modelType;
+        }
+
         public AIModelType ModelType { get; set; }
         public byte[] ImageData { get; set; }
         public ProcessedImageType ImageType { get; set; } = ProcessedImageType.Image;

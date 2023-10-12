@@ -6,7 +6,7 @@ namespace SimplAP.SDK.Core.Dto
     {
         public string AIType { get; set; }
 
-        public MultiFileProcessingInputExtended(MultiFileProcessingInput input, AIModelType type)
+        public MultiFileProcessingInputExtended(MultiFileProcessingInput input, AIModelType type):base(type)
         {
             ImageData = input.ImageData;
             ImageType = input.ImageType;
