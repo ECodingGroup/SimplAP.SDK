@@ -26,7 +26,7 @@ AIModelType modelType = AIModelType.Vehicle; // alebo AIModelType.IdCard
 MultiFileProcessingInput input = new MultiFileProcessingInput(modelType)
 {
     ImageData = ...,
-    ProcessesToRun = new ImageAIProcessingType[] { ImageAIProcessingType.ObjectDetection }
+    ProcessesToRun = new ImageAIProcessingType[] { ImageAIProcessingType.ObjectDetection, ... }
 };
 // ...Zavolanie služby
 MultiFileProcessingOutput output = await _service.ProcessImageFile(input, token);
