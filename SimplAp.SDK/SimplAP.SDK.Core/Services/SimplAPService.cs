@@ -15,11 +15,6 @@ namespace SimplAP.SDK.Core.Services
     public class SimplAPService
     {
         private const string SimpleAPIEndpoint = "https://api.simplap.com/api/app/a-i";
-        private readonly SimplAPAuthService _authService;
-        public SimplAPService(SimplAPAuthService authService)
-        {
-            _authService = authService;
-        }
 
         public async Task<MultiFileProcessingOutput> ProcessImageFile(MultiFileProcessingInput input, SimplAPAccessToken accessToken)
         {
