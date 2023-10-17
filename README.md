@@ -5,13 +5,13 @@ Adaptér k zjednodušeniu integrácie na službu Simpl AP (https://api.simplap.c
 
 ### Získanie prístupového tokenu (Access token)
 ```cs
-var authService = new SimpleApiAuthService(username, password, clientId, clientSecret, tenant);
+var authService = new SimplAPAuthService(username, password, clientId, clientSecret, tenant);
 var token = await authService.GetAccessToken();
 ```
 
 ### Vytvorenie inštancie
 ```cs
-var _service = new SimpleApiAIService();
+var _service = new SimplAPService();
 ```
 
 ### Použitie dostupných metód
