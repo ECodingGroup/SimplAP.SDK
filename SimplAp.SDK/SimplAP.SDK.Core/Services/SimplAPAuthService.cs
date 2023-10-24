@@ -14,11 +14,11 @@ namespace SimplAP.SDK.Core.Services
     {
         private readonly string _userName;
         private readonly string _password;
-        private readonly string _clientId;
+        private readonly string _clientId = "SimpleAPI_App";
         private readonly string _clientSecret;
         private readonly string _tenant;
         private const string _scope = "SimpleAPI";
-        private const string _tokenUrl = "https://api.simplap.com/connect/token";
+        private readonly string _tokenUrl = "https://api.simplap.com/connect/token";
         private readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver
@@ -27,16 +27,25 @@ namespace SimplAP.SDK.Core.Services
             }
         };
 
-        public SimplAPAuthService(string userName, string password, string clientId, string clientSecret, string tenant)
+        public SimplAPAuthService(string userName, string password, string clientSecret, string tenant, string tokenUrl)
         {
+            if(string.IsNullOrEmpty(userName))
+            { throw new ArgumentNullException(nameof(userName)); }
+            if (string.IsNullOrEmpty(password))
+            { throw new ArgumentNullException(nameof(password)); }
+            if (string.IsNullOrEmpty(clientSecret))
+            { throw new ArgumentNullException(nameof(clientSecret)); }
+            if (string.IsNullOrEmpty(tenant))
+            { throw new ArgumentNullException(nameof(tenant)); }
+
             _userName = userName;
             _password = password;
-            _clientId = clientId;
             _clientSecret = clientSecret;
             _tenant = tenant;
+            _tokenUrl = tokenUrl;
         }
 
-        internal async Task<SimplAPAccessToken> GetAccessToken()
+        public async Task<SimplAPAccessToken> GetAccessToken()
         {
             using var client = new HttpClient();
             var formParams = new Dictionary<string, string>

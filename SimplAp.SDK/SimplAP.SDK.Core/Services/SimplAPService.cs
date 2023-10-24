@@ -14,7 +14,14 @@ namespace SimplAP.SDK.Core.Services
 {
     public class SimplAPService
     {
-        private const string SimpleAPIEndpoint = "https://api.simplap.com/api/app/a-i";
+        private readonly string SimpleAPIBaseAddress = "api.simplap.com";
+        private readonly string SimpleAPIEndpoint = "https://{0}/api/app/a-i";
+
+        public SimplAPService(string simpleAPIBaseAddress)
+        {
+            SimpleAPIBaseAddress = simpleAPIBaseAddress;
+            SimpleAPIEndpoint = string.Format(SimpleAPIEndpoint, SimpleAPIBaseAddress);
+        }
 
         public async Task<MultiFileProcessingOutput> ProcessImageFile(MultiFileProcessingInput input, SimplAPAccessToken accessToken)
         {
@@ -35,20 +42,21 @@ namespace SimplAP.SDK.Core.Services
                 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
 
-            using var memoryStream = new MemoryStream(input.ImageData);
-            using var contentStream = new StreamContent(memoryStream);
             using var formData = new MultipartFormDataContent();
             
             StringContent processesToRun = new StringContent(string.Join(",", input.ProcessesToRun.ToArray()).ToLower());
             StringContent imageType = new StringContent(input.ImageType.ToString().ToLower());
 
-            formData.Add(processesToRun, "ProcessesToRun");
-            formData.Add(imageType, "ImageType");
-            contentStream.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            formData.Add(contentStream, "File");
+            formData.Add(processesToRun, "processesToRun");
+            formData.Add(imageType, "imageType");
+
+            using var imageStreamContent = new StreamContent(new MemoryStream(input.ImageData));
+            imageStreamContent.Headers.Add("Content-Type", "application/octet-stream");
+
+            formData.Add(imageStreamContent, "file", $"file.{(input.ImageType == Enums.ProcessedImageType.Image ? "jpg" : "pdf")}");
 
             var url = string.Format($"{SimpleAPIEndpoint}/{{0}}/process-image-file-multipart", input.ModelType.ToString().ToLower());
-            HttpResponseMessage response = client.PostAsync(url, formData).Result;
+            HttpResponseMessage response = await client.PostAsync(url, formData);
 
             string responseString = await response.Content.ReadAsStringAsync();
 

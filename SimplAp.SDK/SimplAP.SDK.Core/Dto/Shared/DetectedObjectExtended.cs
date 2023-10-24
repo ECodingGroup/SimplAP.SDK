@@ -20,5 +20,10 @@ namespace SimplAP.SDK.Core.Dto.Shared
         /// Determines the image quality and whether the picture should be retaken.
         /// </summary>
         public bool? IsImageBlurred { get; set; }
+
+        /// <summary>
+        /// The raw Text That was read by the scanner service
+        /// </summary>
+        public string ScannerRawText { get; set; }
     }
 }
