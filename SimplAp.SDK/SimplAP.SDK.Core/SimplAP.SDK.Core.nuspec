@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SimplAP.SDK.Core</id>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <title>SimplAP.SDK.Core</title>
 	<license type="expression">MIT</license>
     <authors>Tomáš Filip, Adrián Nagy, Adam Sninčák</authors>

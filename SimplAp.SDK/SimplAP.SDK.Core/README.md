@@ -1,144 +1,154 @@
 # Simple Api SDK
-Adapter k zjednoduseniu integracie Simple Api.
+AdaptÈr k zjednoduöeniu integr·cie na sluûbu Simpl AP (https://api.simplap.com).
 
-## Pouzitie
+## Pouûitie
 
-### Vytvorenie instancie
+### ZÌskanie prÌstupovÈho tokenu (Access token)
 ```cs
-var _service = new SimpleApiAIService(
-    new SimpleApiAuthService(username, password, clientId, clientSecret, tenant)
-);
+var authService = new SimplAPAuthService(username, password, clientSecret, tenant);
+var token = await authService.GetAccessToken();
 ```
 
-### Pouzitie dostupnych metod
+### Vytvorenie inötancie
+```cs
+var _service = new SimplAPService();
+```
+
+### Pouûitie dostupn˝ch metÛd
 
 #### _ProcessImageFile_
-Metoda k spracovaniu jednoducheho obrazoveho dokumentu.
+MetÛda k spracovaniu jednoduchÈho obrazovÈho dokumentu.
 
 ```cs
-MultiFileProcessingInput input = new MultiFileProcessingInput();
-// ...Vypln vstupne hodnoty
-AIModelType type = AIModelType.Vehicle; // alebo AIModelType.IdCard
-MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
+// ...Typ AI modelu
+AIModelType modelType = AIModelType.Vehicle; // alebo AIModelType.IdCard
+// ...Konfigur·cia poûadovanej sluûby
+MultiFileProcessingInput input = new MultiFileProcessingInput(modelType)
+{
+    ImageData = ...,
+    ProcessesToRun = new ImageAIProcessingType[] { ImageAIProcessingType.ObjectDetection, ... }
+};
+// ...Zavolanie sluûby
+MultiFileProcessingOutput output = await _service.ProcessImageFile(input, token);
 ```
 
-##### Enumeracia (AIModelType)
+##### Enumer·cia (AIModelType)
 ##
 | Hodnota | Opis |
 | - | - |
-| Vehicle | Rozpoznavanie dopravnych prostriedkov |
-| IdCard | Rozpoznavanie dokladov |
+| Vehicle | Rozpozn·vanie dopravn˝ch prostriedkov |
+| IdCard | Rozpozn·vanie dokladov |
 
 ##### [Vstup] (AIModelType, Trieda (MultiFileProcessingInput))
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
-| ImageData | byte[] | Datova reprezentacia obrazka, tzv. byte array |
-| ImageType | ProcessedImageType | Typ obrazoveho dokumentu |
-| ProcessesToRun | List<ImageAIProcessingType> | Zoznam typov akcii, ktore maju byt prevedene |
+| ImageData | byte[] | D·tov· reprezent·cia obr·zka, tzv. byte array |
+| ImageType | ProcessedImageType | Typ obrazovÈho dokumentu |
+| ProcessesToRun | List<ImageAIProcessingType> | Zoznam typov akciÌ, ktorÈ maj˙ byù prevedenÈ |
 
-##### [Vystup] Trieda (MultiFileProcessingOutput)
+##### [V˝stup] Trieda (MultiFileProcessingOutput)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
-| ProcessedFiles | List<ProcessedObjectFile> | Zoznam spracovanych obrazkov s navratovou hodnotou (Metadata extrahovane z obrazkov na zaklade zvolenych akcii)|
+| ProcessedFiles | List<ProcessedObjectFile> | Zoznam spracovan˝ch obr·zkov s n·vratovou hodnotou (Metad·ta extrahovanÈ z obr·zkov na z·klade zvolen˝ch akciÌ)|
 
-##### Enumeracia (ProcessedImageType)
+##### Enumer·cia (ProcessedImageType)
 ##
 | Hodnota | Opis |
 | - | - |
-| Image | Obrazovy dokument typu Obrazok |
-| PDF | Obrazovy dokument typu PDF |
+| Image | Obrazov˝ dokument typu Obr·zok (predvolen· hodnota) |
+| PDF | Obrazov˝ dokument typu PDF |
 
-##### Enumeracia (ImageAIProcessingType)
+##### Enumer·cia (ImageAIProcessingType)
 ##
-| Hodnota | Opis |
-| - | - |
-| ObjectDetection | - |
-| Scanner | - |
-| FaceRecognition | Nie je podporovane |
-| ObjectRotationAngle | - |
-| ImageBlurDetection | Nie je podporovane |
+| Hodnota | Opis | Vyûaduje sluûbu |
+| - | - | - |
+| ObjectDetection | Rozpoznanie objektov | - |
+| Scanner | Vyùaûovanie ˙dajov (z dokladov) | ObjectDetection |
+| ObjectRotationAngle | Rozpoznanie uhla otoËena rozpoznanÈho objektu | ObjectDetection |
+| FaceRecognition | Rozpoznanie tv·re | ObjectDetection |
+| FaceExtraction | Extrakcia obr·zka tv·re - Pripravujeme | ObjectDetection, FaceRecognition |
+| ImageBlurDetection | Rozpoznanie rozmazanosti obr·zka - Pripravujeme | - |
 
 ##### Trieda (ProcessedObjectFile)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
-| PageNo | int? | Ak bol vstupnym obrazovym dokumentom viacstranovy dokument, tato hodnota oznacuje, na ktorej strane bol objekt zisteny |
-| DetectedObjects | List<DetectedObjectExtended> | Zoznam rozpoznanych objektov |
+| PageNo | int? | Ak bol vstupn˝m obrazov˝m dokumentom viacstranov˝ dokument, t·to hodnota oznaËuje, na ktorej strane bol objekt rozpoznan˝ |
+| DetectedObjects | List<DetectedObjectExtended> | Zoznam rozpoznan˝ch objektov |
 
 ##### Trieda (DetectedObjectExtended)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
-| BBox | BBox | Bounding Box zdetegovaneho objektu |
-| Category | string | Kategoria zdetegovaneho objektu |
+| BBox | BBox | Bounding Box zdetegovanÈho objektu |
+| Category | string | KategÛria rozpoznanÈho objektu |
 | Score | double | Miera istoty detekcie |
-| PageNo | int? | Ak bol vstupnym obrazovym dokumentom viacstranovy dokument, tato hodnota oznacuje, na ktorej strane bol objekt zisteny |
-| RollAngle | double? | Uhol, pod ktorym je zdetegovany objekt otoceny vzhladom na obrazok |
-| DetectedFaces | IEnumerable<FaceAnnotationDto> | Zoznam zdetegovanych tvari |
-| IdCardInfo | IdCardInfo | Zdetegovane data o doklade |
-| IsImageBlurred | bool? | Urcuje kvalitu obrazu a skutocnost, ci sa ma obrazok nasnimat znova. |
+| RollAngle | double? | Uhol, pod ktor˝m je rozpoznan˝ objekt otoËen˝ vzhæadom na obr·zok |
+| DetectedFaces | IEnumerable<FaceAnnotationDto> | Zoznam rozpoznan˝ch tv·rÌ |
+| IdCardInfo | IdCardInfo | RozpoznanÈ d·ta o dokladoch |
+| IsImageBlurred | bool? | UrËuje kvalitu obr·zka. |
 
 ##### Trieda (BBox)
 ##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| Xmax | double | - |
-| Xmin | double | - |
-| Ymax | double | - |
-| Ymin | double | - |
+| Atrib˙t | D·tov˝ typ |
+| - | - |
+| Xmax | double |
+| Xmin | double |
+| Ymax | double |
+| Ymin | double |
 
 ##### Trieda (FaceAnnotationDto)
 ##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| BoundingPoly | BoundingPolyDto | - |
-| FdBoundingPoly | BoundingPolyDto | - |
-| Landmarks | IEnumerable<LandmarkDto> | - |
-| RollAngle | float | - |
-| PanAngle | float | - |
-| TiltAngle | float | - |
-| DetectionConfidence | float | - |
-| LandmarkingConfidence | float | - |
-| JoyLikelihood | FaceAnnotationLikelihood | - |
-| SorrowLikelihood | FaceAnnotationLikelihood | - |
-| AngerLikelihood | FaceAnnotationLikelihood | - |
-| SurpriseLikelihood | FaceAnnotationLikelihood | - |
-| UnderExposedLikelihood | FaceAnnotationLikelihood | - |
-| BlurredLikelihood | FaceAnnotationLikelihood | - |
-| HeadwearLikelihood | FaceAnnotationLikelihood | - |
-| DetectedFaceImageBase64 | string | - |
+| Atrib˙t | D·tov˝ typ |
+| - | - |
+| BoundingPoly | BoundingPolyDto |
+| FdBoundingPoly | BoundingPolyDto |
+| Landmarks | IEnumerable<LandmarkDto> |
+| RollAngle | float |
+| PanAngle | float |
+| TiltAngle | float |
+| DetectionConfidence | float |
+| LandmarkingConfidence | float |
+| JoyLikelihood | FaceAnnotationLikelihood |
+| SorrowLikelihood | FaceAnnotationLikelihood |
+| AngerLikelihood | FaceAnnotationLikelihood |
+| SurpriseLikelihood | FaceAnnotationLikelihood |
+| UnderExposedLikelihood | FaceAnnotationLikelihood |
+| BlurredLikelihood | FaceAnnotationLikelihood |
+| HeadwearLikelihood | FaceAnnotationLikelihood |
+| DetectedFaceImageBase64 | string |
 
 ##### Trieda (BoundingPolyDto)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ |
 | - | - | - |
-| Vertices | IEnumerable<VertexDto> | - |
-| NormalizedVertices | IEnumerable<NormalizedVertexDto> | - |
+| Vertices | IEnumerable<VertexDto> |
+| NormalizedVertices | IEnumerable<NormalizedVertexDto> |
 
 ##### Trieda (VertexDto)
 ##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| X | int | - |
-| Y | int | - |
+| Atrib˙t | D·tov˝ typ |
+| - | - | 
+| X | int |
+| Y | int |
 
 ##### Trieda (NormalizedVertexDto)
 ##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| X | float | - |
-| Y | float | - |
+| Atrib˙t | D·tov˝ typ |
+| - | - |
+| X | float |
+| Y | float |
 
 ##### Trieda (LandmarkDto)
 ##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| Type | LandmarkType | - |
-| Position | PositionDto | - |
+| Atrib˙t | D·tov˝ typ |
+| - | - |
+| Type | LandmarkType |
+| Position | PositionDto |
 
-##### Enumeracia (LandmarkType)
+##### Enumer·cia (LandmarkType)
 ##
 | Hodnota | Opis |
 | - | - |
@@ -182,13 +192,13 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (PositionDto)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | X | float | - |
 | Y | float | - |
 | Z | float | - |
 
-##### Enumeracia (FaceAnnotationLikelihood)
+##### Enumer·cia (FaceAnnotationLikelihood)
 ##
 | Hodnota | Opis |
 | - | - |
@@ -201,7 +211,7 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (IdCardInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | NationalIdCardFrontInfo | NationalIdCardFrontInfo | - |
 | NationalIdCardBackInfo | NationalIdCardBackInfo | - |
@@ -215,7 +225,7 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (NationalIdCardFrontInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | FirstName | string | - |
 | LastName | string | - |
@@ -228,7 +238,7 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 | DateOfBirth | DateTime? | - |
 | ExpiryDate | DateTime? | - |
 
-##### Enumeracia (Gender)
+##### Enumer·cia (Gender)
 ##
 | Hodnota | Opis |
 | - | - |
@@ -237,7 +247,7 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (NationalIdCardBackInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | Address | string | - |
 | StreetName | string | - |
@@ -252,7 +262,7 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (DriversLicenseFrontInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | FirstName | string | - |
 | LastName | string | - |
@@ -265,13 +275,13 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (DriversLicenseBackInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | LicenseAllowedCategories | List<string> | - |
 
 ##### Trieda (SmallTechnicalLicenseFrontInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | LicensePlate | string | - |
 | Owner | string | - |
@@ -290,7 +300,7 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (SmallTechnicalLicenseBackInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | Manufacturer | string | - |
 | Variant | string | - |
@@ -312,7 +322,7 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 
 ##### Trieda (PassportInfo)
 ##
-| Atribut | Datovy typ | Opis |
+| Atrib˙t | D·tov˝ typ | Opis |
 | - | - | - |
 | IssuedBy | string | - |
 | BirthNumber | string | - |
@@ -327,90 +337,3 @@ MultiFileProcessingOutput output = await _service.ProcessImageFile(type, input);
 | Type | string | - |
 | Gender | Gender? | - |
 | Nationality | string | - |
-
-#### _ProcessImageFileMultipart_
-Metoda k spracovaniu obrazovych dokumentov s moznostou odosielania multipart udajov.
-
-```cs
-MultiFileProcessingMultipartInput input = new MultiFileProcessingMultipartInput();
-// ...Vypln vstupne hodnoty
-AIModelType type = AIModelType.Vehicle; // alebo AIModelType.IdCard
-MultiFileProcessingOutput output = await _service.ProcessImageFileMultipart(type, input);
-```
-
-##### [Vstup] Trieda (AIModelType, (MultiFileProcessingMultipartInput))
-##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| FileStream | Stream | Datova reprezentacia obrazka, tzv. file stream |
-| ImageType | ProcessedImageType | Typ obrazoveho dokumentu |
-| ProcessesToRun | List<ImageAIProcessingType> | Zoznam typov akcii, ktore maju byt prevedene |
-
-##### [Vystup] Trieda (MultiFileProcessingOutput)
-##
-
-#### _GetAvailableImageProcessing_
-Metoda k zisteniu dostupnych typov akcii, ktore mozu byt pocas spracovania obrazoveho dokumentu pouzite.
-
-```cs
-List<AvailableProcessingDto> output = await _service.GetAvailableImageProcessing();
-```
-
-##### [Vystup] Zoznam tried (AvailableProcessingDto)
-##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| Name | string | - |
-| Description | string | - |
-| ExampleUrl | string | - |
-| ProductCode | string | Kod produktu |
-| ProcessingTypeEnumValue | ImageAIProcessingType | Typ akcie, ktora ma byt prevedena |
-| ProcessingTypeStringValue | string | Typ akcie, ktora ma byt prevedena (textova reprezentacia)|
-
-#### _GetNumberOfCallsForPeriod_
-Metoda k zisteniu poctu volani Simple Api za dane casove obdobie.
-
-```cs
-DateTimeOffset dateFrom = DateTimeOffset.Now.AddDays(-3);
-DateTimeOffset dateTo = DateTimeOffset.Now;
-GetNumberOfCallsForPeriodOutput output = await _service.GetNumberOfCallsForPeriod(dateFrom, dateTo);
-```
-
-##### [Vstup] (DateTimeOffset, DateTimeOffset)
-##
-
-##### [Vystup] Trieda (GetNumberOfCallsForPeriodOutput)
-##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| TotalNumberOfCalls | int | - |
-| CallsFrom | DateTimeOffset | - |
-| CallsUntil | DateTimeOffset | - |
-| CallsByProduct | List<NumberOfCallsPerProductDto> | - |
-
-##### Trieda (NumberOfCallsPerProductDto)
-##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| NumberOfCalls | int | - |
-| ProductCode | string | Kod produktu |
-| ProductName | string | Nazov produktu |
-
-#### _GetNumberOfCallsPerDayForPeriod_
-Metoda k zisteniu poctu volani Simple Api vzhladom na dni za dane obdobie.
-
-```cs
-DateTimeOffset dateFrom = DateTimeOffset.Now.AddDays(-3);
-DateTimeOffset dateTo = DateTimeOffset.Now;
-List<NumberOfCallsPerDayDto> output = await _service.GetNumberOfCallsPerDayForPeriod(dateFrom, dateTo);
-```
-
-##### [Vstup] (DateTimeOffset, DateTimeOffset)
-##
-
-##### [Vystup] Zoznam tried (NumberOfCallsPerDayDto)
-##
-| Atribut | Datovy typ | Opis |
-| - | - | - |
-| Day | DateTime | Datum a cas |
-| NumberOfCallsPerDay | int | - |

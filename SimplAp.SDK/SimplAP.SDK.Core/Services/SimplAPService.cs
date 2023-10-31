@@ -17,9 +17,9 @@ namespace SimplAP.SDK.Core.Services
         private readonly string SimpleAPIBaseAddress = "api.simplap.com";
         private readonly string SimpleAPIEndpoint = "https://{0}/api/app/a-i";
 
-        public SimplAPService(string simpleAPIBaseAddress)
+        public SimplAPService()
         {
-            SimpleAPIBaseAddress = simpleAPIBaseAddress;
+            SimpleAPIBaseAddress = "api.simplap.com";
             SimpleAPIEndpoint = string.Format(SimpleAPIEndpoint, SimpleAPIBaseAddress);
         }
 
