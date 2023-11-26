@@ -27,7 +27,7 @@ namespace SimplAP.SDK.Core.Services
             }
         };
 
-        public SimplAPAuthService(string userName, string password, string clientSecret, string tenant, string tokenUrl)
+        public SimplAPAuthService(string userName, string password, string clientSecret, string tenant)
         {
             if(string.IsNullOrEmpty(userName))
             { throw new ArgumentNullException(nameof(userName)); }
@@ -42,7 +42,6 @@ namespace SimplAP.SDK.Core.Services
             _password = password;
             _clientSecret = clientSecret;
             _tenant = tenant;
-            _tokenUrl = tokenUrl;
         }
 
         public async Task<SimplAPAccessToken> GetAccessToken()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ECoding.SimpleAPI.Dto.AI.TextParser;
+using System.Collections.Generic;
 
 namespace SimplAP.SDK.Core.Dto.Shared.IdCard
 {
@@ -11,6 +12,7 @@ namespace SimplAP.SDK.Core.Dto.Shared.IdCard
         public SmallTechnicalLicenseFrontInfo SmallTechnicalLicenseFrontInfo { get; set; }
         public SmallTechnicalLicenseBackInfo SmallTechnicalLicenseBackInfo { get; set; }
         public PassportInfo PassportInfo { get; set; }
+        public DisabilityCardInfo DisabilityCardInfo { get; set; }
 
         public Dictionary<string, List<object>> CombinedExtractedInfo { get; set; } = new Dictionary<string, List<object>>();
 
