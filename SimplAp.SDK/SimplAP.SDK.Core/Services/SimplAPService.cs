@@ -19,8 +19,8 @@ namespace SimplAP.SDK.Core.Services
 
         public SimplAPService()
         {
-            SimpleAPIBaseAddress = "api.simplap.com";
             SimpleAPIAIEndpoint = string.Format(SimpleAPIAIEndpoint, SimpleAPIBaseAddress);
+            SimpleAPIStatsEndpoint = string.Format(SimpleAPIStatsEndpoint, SimpleAPIBaseAddress);
         }
 
         private void ValidateAccessToken(SimplAPAccessToken accessToken)
@@ -74,7 +74,7 @@ namespace SimplAP.SDK.Core.Services
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="SimplAPAuthException"></exception>
         /// <exception cref="SimplAPProcessingException"></exception>
-        public async Task<ProcessingOutput?> ProcessAI(ProcessingExtendedInput input, SimplAPAccessToken accessToken)
+        public async Task<ProcessingOutput?> ProcessAIAsync(ProcessingExtendedInput input, SimplAPAccessToken accessToken)
         {
             if (input == null)
             { throw new ArgumentNullException(nameof(input)); }
@@ -123,7 +123,7 @@ namespace SimplAP.SDK.Core.Services
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="SimplAPAuthException"></exception>
-        public async Task<GetAvailableGenericScannerFieldsOutput> GetAvailableGenericScannerFields(SimplAPAccessToken accessToken)
+        public async Task<GetAvailableGenericScannerFieldsOutput> GetAvailableGenericScannerFieldsAsync(SimplAPAccessToken accessToken)
         {
             ValidateAccessToken(accessToken);
             var url = $"{SimpleAPIAIEndpoint}/available-generic-scanner-fields";

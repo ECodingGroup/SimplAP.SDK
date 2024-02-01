@@ -5,9 +5,12 @@ namespace SimplAP.SDK.Core.Dto
 {
     public class ProcessingExtendedInput : ProcessingInput
     {
-        public ProcessingExtendedInput(AIModelType modelType)
+        public ProcessingExtendedInput(AIModelType modelType, ProcessedImageType imageType, byte[] fileToProcess, params ImageAIProcessingType[] processesToRun)
         {
             ModelType = modelType;
+            ImageType = imageType;
+            ImageData = fileToProcess;
+            ProcessesToRun = processesToRun;
         }
 
         /// <summary>
@@ -24,7 +27,7 @@ namespace SimplAP.SDK.Core.Dto
         /// </summary>
         public IEnumerable<string> GenericScannerFieldsToUse { get; set; }
 
-        public AIModelType ModelType { get; set; }
+        public AIModelType ModelType { get; internal set; }
     }
 
 }

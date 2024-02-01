@@ -17,6 +17,6 @@ namespace SimplAP.SDK.Core.Dto
         /// There can be multiple entities as the result of processing or none. (For example multiple detected objects)
         /// If no suitable entities to process were found as part of the image or the image was invalid, this will be empty.
         /// </summary>
-        public List<ProcessedEntity> Entities { get; set; } = new List<ProcessedEntity>();
+        public IEnumerable<ProcessedEntity> Entities { get; set; } = new List<ProcessedEntity>();
     }
 }
