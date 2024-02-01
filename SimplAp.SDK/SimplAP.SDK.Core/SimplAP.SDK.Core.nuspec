@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SimplAP.SDK.Core</id>
-    <version>1.1.0</version>
+    <version>3.0.0</version>
     <title>SimplAP.SDK.Core</title>
 	<license type="expression">MIT</license>
     <authors>Tomáš Filip, Adrián Nagy, Adam Sninčák</authors>
@@ -12,14 +12,15 @@
     <description>Nuget package contains SDK for integrating into Simpl AP AI services (api.simplap.com).</description>
     <copyright>Copyright © ECoding Slovakia s.r.o. 2023</copyright>
     <tags>SimplAP SimpleAPI AI ECoding</tags>
-	<readme>README.md</readme>
+	<readme>README-Nuget.md</readme>
 	<dependencies>
 		<group targetFramework=".NETStandard2.1">
+			<dependency id="Newtonsoft.Json" version="13.0.3" />
 		</group>
 	</dependencies>
   </metadata>
   <files>
     <file src="bin\Release\netstandard2.1\SimplAP.SDK.Core.dll" target="lib\netstandard2.1\SimplAP.SDK.Core.dll" />
-	<file src="README.md" target="" />
+	<file src="README-Nuget.md" target="" />
   </files>
 </package>

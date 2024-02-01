@@ -7,6 +7,11 @@
         /// </summary>
         public BBox BBox { get; set; }
         /// <summary>
+        /// The bounding boxes of the estimated optimal crop area.
+        /// Please be aware that if we are not able to calculate this then it will be null and BBox should be then used instead.
+        /// </summary>
+        //public Bbox EstimatedOptimalCropBBox { get; set; }
+        /// <summary>
         /// The detected object category
         /// </summary>
         public string Category { get; set; }
@@ -14,10 +19,5 @@
         /// The detection confidence score
         /// </summary>
         public double Score { get; set; }
-
-        /// <summary>
-        /// The angle at which the detected object is rotated relative to the image
-        /// </summary>
-        public double? RollAngle { get; set; }
     }
 }

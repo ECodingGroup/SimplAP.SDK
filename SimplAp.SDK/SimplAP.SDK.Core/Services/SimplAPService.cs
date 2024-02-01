@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Linq;
 using System;
 using SimplAP.SDK.Core.Dto;
-using SimplAP.SDK.Core.Dto.Shared;
 using System.IO;
 using SimplAP.SDK.Core.Exceptions;
 using System.Net;
@@ -15,48 +14,30 @@ namespace SimplAP.SDK.Core.Services
     public class SimplAPService
     {
         private readonly string SimpleAPIBaseAddress = "api.simplap.com";
-        private readonly string SimpleAPIEndpoint = "https://{0}/api/app/a-i";
+        private readonly string SimpleAPIAIEndpoint = "https://{0}/api/app/a-i";
+        private readonly string SimpleAPIStatsEndpoint = "https://{0}/api/app/stats";
 
         public SimplAPService()
         {
-            SimpleAPIBaseAddress = "api.simplap.com";
-            SimpleAPIEndpoint = string.Format(SimpleAPIEndpoint, SimpleAPIBaseAddress);
+            SimpleAPIAIEndpoint = string.Format(SimpleAPIAIEndpoint, SimpleAPIBaseAddress);
+            SimpleAPIStatsEndpoint = string.Format(SimpleAPIStatsEndpoint, SimpleAPIBaseAddress);
         }
 
-        public async Task<MultiFileProcessingOutput> ProcessImageFile(MultiFileProcessingInput input, SimplAPAccessToken accessToken)
+        private void ValidateAccessToken(SimplAPAccessToken accessToken)
         {
-            if (input == null)
-            { throw new ArgumentNullException(nameof(input)); }
-            if (input.ImageData == null)
-            { throw new ArgumentNullException(nameof(input.ImageData)); }
-            if (input.ProcessesToRun == null || !input.ProcessesToRun.Any()) 
-            { throw new ArgumentException("You must select what processes you want to run.", nameof(input.ProcessesToRun)); }
-            if(input.ModelType == default)
-            { throw new ArgumentException("You must select what AI model you want to use.", nameof(input.ModelType)); }
-            if (string.IsNullOrEmpty(accessToken?.AccessToken)) 
+            if (string.IsNullOrEmpty(accessToken?.AccessToken))
             { throw new ArgumentNullException(nameof(accessToken)); }
-            if(DateTimeOffset.Now >= accessToken.CreationTime.AddSeconds(accessToken.ExpiresIn)) 
-            { throw new ArgumentException($"The access token is expired, please issue a new token and repeat the call."); }
+            if (DateTimeOffset.Now >= accessToken.CreationTime.AddSeconds(accessToken.ExpiresIn))
+            { throw new SimplAPAuthException($"The access token is expired, please issue a new token and repeat the call."); }
+        }
 
-            using var client = new HttpClient();
-                
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
-
-            using var formData = new MultipartFormDataContent();
-            
-            StringContent processesToRun = new StringContent(string.Join(",", input.ProcessesToRun.ToArray()).ToLower());
-            StringContent imageType = new StringContent(input.ImageType.ToString().ToLower());
-
-            formData.Add(processesToRun, "processesToRun");
-            formData.Add(imageType, "imageType");
-
-            using var imageStreamContent = new StreamContent(new MemoryStream(input.ImageData));
-            imageStreamContent.Headers.Add("Content-Type", "application/octet-stream");
-
-            formData.Add(imageStreamContent, "file", $"file.{(input.ImageType == Enums.ProcessedImageType.Image ? "jpg" : "pdf")}");
-
-            var url = string.Format($"{SimpleAPIEndpoint}/{{0}}/process-image-file-multipart", input.ModelType.ToString().ToLower());
-            HttpResponseMessage response = await client.PostAsync(url, formData);
+        private async Task<T?> ValidateStatusCodeAndGetResponse<T>(HttpResponseMessage response)
+            where T : class
+        {
+            if(response == null)
+            {
+                throw new SimplAPProcessingException($"Internal Server Error, please contact us at support@simplap.com, response is null");
+            }
 
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -74,10 +55,85 @@ namespace SimplAP.SDK.Core.Services
 
             try
             {
-                return JsonConvert.DeserializeObject<MultiFileProcessingOutput>(responseString);
+                return responseString == null ? null : JsonConvert.DeserializeObject<T>(responseString);
             }
             catch
             { throw new SimplAPProcessingException($"There has been an error deserializing the response. Please contact us at support@simplap.com. Response: {responseString}"); }
         }
+
+        /// <summary>
+        /// Performs various AI processing tasks on the input image. 
+        /// Please specify what AI processing tasks you want to perform.
+        /// DisableObjectSegmentation turns on or off segmentation of processing based on the detected objects. By default it is turned off and it is essential to be turned off for processes like scanner. If turned on you will only be able scan generic scanner fields
+        /// GenericScannerFieldsToUse can be used only in combination with DisableObjectSegmentation = true. The list of available scanner fields you can get from the GetAvailableGenericScannerFields function
+        /// </summary>
+        /// <param name="input">The input image and expected processing tasks to perform</param>
+        /// <param name="accessToken">The access token generated by the SimplAPAuthService</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="SimplAPAuthException"></exception>
+        /// <exception cref="SimplAPProcessingException"></exception>
+        public async Task<ProcessingOutput?> ProcessAIAsync(ProcessingExtendedInput input, SimplAPAccessToken accessToken)
+        {
+            if (input == null)
+            { throw new ArgumentNullException(nameof(input)); }
+            if (input.ImageData == null)
+            { throw new ArgumentNullException(nameof(input.ImageData)); }
+            if (input.ProcessesToRun == null || !input.ProcessesToRun.Any()) 
+            { throw new ArgumentException("You must select what processes you want to run.", nameof(input.ProcessesToRun)); }
+            if(input.ModelType == default)
+            { throw new ArgumentException("You must select what AI model you want to use.", nameof(input.ModelType)); }
+            ValidateAccessToken(accessToken);
+
+            using var client = new HttpClient();
+                
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
+
+            using var formData = new MultipartFormDataContent();
+            
+            StringContent processesToRun = new StringContent(string.Join(",", input.ProcessesToRun.ToArray()).ToLower());
+            formData.Add(processesToRun, "processesToRun");
+            StringContent imageType = new StringContent(input.ImageType.ToString().ToLower());
+            StringContent disableObjectSegmentation = new StringContent(input.DisableObjectSegmentation.ToString().ToLower());
+            formData.Add(disableObjectSegmentation, "disableObjectSegmentation");
+            if(input.GenericScannerFieldsToUse != null && input.GenericScannerFieldsToUse.Any())
+            {
+                StringContent genericScannerFieldsToUse = new StringContent(string.Join(",", input.GenericScannerFieldsToUse.ToArray()).ToLower());
+                formData.Add(genericScannerFieldsToUse, "disableObjectSegmentation");
+            }
+
+
+            using var imageStreamContent = new StreamContent(new MemoryStream(input.ImageData));
+            imageStreamContent.Headers.Add("Content-Type", "application/octet-stream");
+
+            formData.Add(imageStreamContent, "file", $"file.{(input.ImageType == Enums.ProcessedImageType.Image ? "jpg" : "pdf")}");
+
+            var url = string.Format($"{SimpleAPIAIEndpoint}/{{0}}/process-multipart", input.ModelType.ToString().ToLower());
+            HttpResponseMessage response = await client.PostAsync(url, formData);
+
+            return await ValidateStatusCodeAndGetResponse<ProcessingOutput>(response);
+        }
+
+        /// <summary>
+        /// Gets the list of available generic scanner fields to use for AI processing.
+        /// </summary>
+        /// <param name="accessToken">The access token generated by the SimplAPAuthService</param>
+        /// <returns>Returns the currently available generic scanner fields to use in combination with DisableObjectSegmentation = true for the AI processing</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="SimplAPAuthException"></exception>
+        public async Task<GetAvailableGenericScannerFieldsOutput> GetAvailableGenericScannerFieldsAsync(SimplAPAccessToken accessToken)
+        {
+            ValidateAccessToken(accessToken);
+            var url = $"{SimpleAPIAIEndpoint}/available-generic-scanner-fields";
+
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
+            var response = await client.GetAsync(url);
+
+            return await ValidateStatusCodeAndGetResponse<GetAvailableGenericScannerFieldsOutput>(response);
+        }
+
     }
 }

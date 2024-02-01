@@ -44,7 +44,7 @@ namespace SimplAP.SDK.Core.Services
             _tenant = tenant;
         }
 
-        public async Task<SimplAPAccessToken> GetAccessToken()
+        public async Task<SimplAPAccessToken> GetAccessTokenAsync()
         {
             using var client = new HttpClient();
             var formParams = new Dictionary<string, string>
