@@ -44,7 +44,7 @@ AIModelType modelType = AIModelType.Vehicle; // alebo AIModelType.IdCard
 // ...Konfigurácia požadovanej služby
 var input = new ProcessingExtendedInput(
     AIModelType.IdCard,
-    ProcessedImageType.Image,
+    ProcessedImageType.PDF,
     bytearray,
     ImageAIProcessingType.Scanner,
     ImageAIProcessingType.Detection,
