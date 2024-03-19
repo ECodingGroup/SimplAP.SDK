@@ -13,7 +13,7 @@ namespace SimplAP.SDK.Core.Services
 {
     public class SimplAPService
     {
-        private readonly string SimpleAPIBaseAddress = "localhost:44398";
+        private readonly string SimpleAPIBaseAddress = "api.simplap.com";
         private readonly string SimpleAPIAIEndpoint = "https://{0}/api/app/a-i";
         private readonly string SimpleAPIStatsEndpoint = "https://{0}/api/app/stats";
 
