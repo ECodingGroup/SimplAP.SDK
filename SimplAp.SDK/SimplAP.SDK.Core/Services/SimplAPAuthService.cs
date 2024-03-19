@@ -46,8 +46,9 @@ namespace SimplAP.SDK.Core.Services
 
         public async Task<SimplAPAccessToken> GetAccessTokenAsync()
         {
-            using var client = new HttpClient();
-            var formParams = new Dictionary<string, string>
+            using (var client = new HttpClient())
+            {
+                var formParams = new Dictionary<string, string>
                 {
                     { "grant_type", "password" },
                     { "username", _userName},
@@ -57,21 +58,26 @@ namespace SimplAP.SDK.Core.Services
                     { "client_secret", _clientSecret },
                     { "__tenant", _tenant }
                 };
-            using var content = new FormUrlEncodedContent(formParams.AsEnumerable());
-            HttpResponseMessage response = await client.PostAsync(_tokenUrl, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
+
+                using (var content = new FormUrlEncodedContent(formParams.AsEnumerable()))
+                {
+                    HttpResponseMessage response = await client.PostAsync(_tokenUrl, content);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+
+                    try
+                    { response.EnsureSuccessStatusCode(); }
+                    catch
+                    { throw new SimplAPAuthException($"Unable to Generate Token, please check your settings. Status: {response.StatusCode}, Response: {responseContent}"); }
+
+                    if (string.IsNullOrEmpty(responseContent)) throw new SimplAPAuthException("Unable to read token response. The API Could be down. Please contact support at support@simplap.com");
+
+                    try
+                    { return JsonConvert.DeserializeObject<SimplAPAccessToken>(responseContent, SerializerSettings); }
+                    catch (Exception ex)
+                    { throw new SimplAPAuthException($"Unable to deserialize token response. Token Response: {responseContent}, Error: {ex.Message}", ex); }
+                }
+            }
             
-            try
-            { response.EnsureSuccessStatusCode(); }
-            catch
-            { throw new SimplAPAuthException($"Unable to Generate Token, please check your settings. Status: {response.StatusCode}, Response: {responseContent}"); }
-
-            if (string.IsNullOrEmpty(responseContent)) throw new SimplAPAuthException("Unable to read token response. The API Could be down. Please contact support at support@simplap.com");
-
-            try
-            { return JsonConvert.DeserializeObject<SimplAPAccessToken>(responseContent, SerializerSettings); }
-            catch(Exception ex)
-            { throw new SimplAPAuthException($"Unable to deserialize token response. Token Response: {responseContent}, Error: {ex.Message}", ex); }
         }
     }
 }
