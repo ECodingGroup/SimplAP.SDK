@@ -13,7 +13,7 @@ namespace SimplAP.SDK.Core.Services
 {
     public class SimplAPService
     {
-        private readonly string SimpleAPIBaseAddress = "api.simplap.com";
+        private readonly string SimpleAPIBaseAddress = "localhost:44398";
         private readonly string SimpleAPIAIEndpoint = "https://{0}/api/app/a-i";
         private readonly string SimpleAPIStatsEndpoint = "https://{0}/api/app/stats";
 
@@ -31,7 +31,7 @@ namespace SimplAP.SDK.Core.Services
             { throw new SimplAPAuthException($"The access token is expired, please issue a new token and repeat the call."); }
         }
 
-        private async Task<T?> ValidateStatusCodeAndGetResponse<T>(HttpResponseMessage response)
+        private async Task<T> ValidateStatusCodeAndGetResponse<T>(HttpResponseMessage response)
             where T : class
         {
             if(response == null)
@@ -74,7 +74,7 @@ namespace SimplAP.SDK.Core.Services
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="SimplAPAuthException"></exception>
         /// <exception cref="SimplAPProcessingException"></exception>
-        public async Task<ProcessingOutput?> ProcessAIAsync(ProcessingExtendedInput input, SimplAPAccessToken accessToken)
+        public async Task<ProcessingOutput> ProcessAIAsync(ProcessingExtendedInput input, SimplAPAccessToken accessToken)
         {
             if (input == null)
             { throw new ArgumentNullException(nameof(input)); }
@@ -86,33 +86,37 @@ namespace SimplAP.SDK.Core.Services
             { throw new ArgumentException("You must select what AI model you want to use.", nameof(input.ModelType)); }
             ValidateAccessToken(accessToken);
 
-            using var client = new HttpClient();
-                
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
-
-            using var formData = new MultipartFormDataContent();
-            
-            StringContent processesToRun = new StringContent(string.Join(",", input.ProcessesToRun.ToArray()).ToLower());
-            formData.Add(processesToRun, "processesToRun");
-            StringContent imageType = new StringContent(input.ImageType.ToString().ToLower());
-            StringContent disableObjectSegmentation = new StringContent(input.DisableObjectSegmentation.ToString().ToLower());
-            formData.Add(disableObjectSegmentation, "disableObjectSegmentation");
-            if(input.GenericScannerFieldsToUse != null && input.GenericScannerFieldsToUse.Any())
+            using (var formData = new MultipartFormDataContent())
+            using (var client = new HttpClient())
             {
-                StringContent genericScannerFieldsToUse = new StringContent(string.Join(",", input.GenericScannerFieldsToUse.ToArray()).ToLower());
-                formData.Add(genericScannerFieldsToUse, "disableObjectSegmentation");
+
+                StringContent processesToRun = new StringContent(string.Join(",", input.ProcessesToRun.ToArray()).ToLower());
+                formData.Add(processesToRun, "processesToRun");
+                StringContent imageType = new StringContent(input.ImageType.ToString().ToLower());
+                formData.Add(imageType, "imageType");
+                StringContent disableObjectSegmentation = new StringContent(input.DisableObjectSegmentation.ToString().ToLower());
+                formData.Add(disableObjectSegmentation, "disableObjectSegmentation");
+                if (input.GenericScannerFieldsToUse != null && input.GenericScannerFieldsToUse.Any())
+                {
+                    StringContent genericScannerFieldsToUse = new StringContent(string.Join(",", input.GenericScannerFieldsToUse.ToArray()).ToLower());
+                    formData.Add(genericScannerFieldsToUse, "disableObjectSegmentation");
+                }
+
+                using (var imageStreamContent = new StreamContent(new MemoryStream(input.ImageData)))
+                {
+                    imageStreamContent.Headers.Add("Content-Type", "application/octet-stream");
+
+                    formData.Add(imageStreamContent, "file", $"file.{(input.ImageType == Enums.ProcessedImageType.Image ? "jpg" : "pdf")}");
+
+                    var url = string.Format($"{SimpleAPIAIEndpoint}/{{0}}/process-multipart", input.ModelType.ToString().ToLower());
+
+
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
+
+                    HttpResponseMessage response = await client.PostAsync(url, formData);
+                    return await ValidateStatusCodeAndGetResponse<ProcessingOutput>(response);
+                }
             }
-
-
-            using var imageStreamContent = new StreamContent(new MemoryStream(input.ImageData));
-            imageStreamContent.Headers.Add("Content-Type", "application/octet-stream");
-
-            formData.Add(imageStreamContent, "file", $"file.{(input.ImageType == Enums.ProcessedImageType.Image ? "jpg" : "pdf")}");
-
-            var url = string.Format($"{SimpleAPIAIEndpoint}/{{0}}/process-multipart", input.ModelType.ToString().ToLower());
-            HttpResponseMessage response = await client.PostAsync(url, formData);
-
-            return await ValidateStatusCodeAndGetResponse<ProcessingOutput>(response);
         }
 
         /// <summary>
@@ -128,11 +132,13 @@ namespace SimplAP.SDK.Core.Services
             ValidateAccessToken(accessToken);
             var url = $"{SimpleAPIAIEndpoint}/available-generic-scanner-fields";
 
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
-            var response = await client.GetAsync(url);
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
+                var response = await client.GetAsync(url);
 
-            return await ValidateStatusCodeAndGetResponse<GetAvailableGenericScannerFieldsOutput>(response);
+                return await ValidateStatusCodeAndGetResponse<GetAvailableGenericScannerFieldsOutput>(response);
+            } 
         }
 
     }
