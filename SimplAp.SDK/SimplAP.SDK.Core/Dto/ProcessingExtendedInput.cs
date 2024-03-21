@@ -27,6 +27,12 @@ namespace SimplAP.SDK.Core.Dto
         /// </summary>
         public IEnumerable<string> GenericScannerFieldsToUse { get; set; }
 
+        /// <summary>
+        /// If checkbox detection is inabled we will try to find all the checkboxes in the form but we will asign random Ids.
+        /// To be more specific, you will need to provide us some identifiers and matching regexes to specify the checkboxes. 
+        /// </summary>
+        public IEnumerable<CheckboxDetectionInput> CheckboxesToDetect { get; set; }
+
         public AIModelType ModelType { get; internal set; }
     }
 

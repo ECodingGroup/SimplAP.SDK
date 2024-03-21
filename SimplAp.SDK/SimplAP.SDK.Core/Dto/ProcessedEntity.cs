@@ -52,6 +52,12 @@ namespace SimplAP.SDK.Core.Dto
         /// </summary>
         public PerformedProcessing<BarcodeDto> DetectedBarcode { get; set; } = new PerformedProcessing<BarcodeDto>(null, ImageAIProcessingType.BarcodeReader);
 
+        /// <summary>
+        /// If the checkbox detection option was enabled, this property will contain the contents of the detected checkboxes and their values.
+        /// The checkboxes will be detected no matter the input parameters but we recomment pairing this with the checkbox input parameters to get better results
+        /// </summary>
+        public PerformedProcessing<IReadOnlyDictionary<string, IEnumerable<DetectedCheckboxDto>>, IEnumerable<DetectedCheckboxDto>, string> DetectedCheckboxes { get; set; } = new PerformedProcessing<IReadOnlyDictionary<string, IEnumerable<DetectedCheckboxDto>>, IEnumerable<DetectedCheckboxDto>, string>(null, ImageAIProcessingType.CheckboxDetection);
+
 
         public bool IsPerformed()
         {
@@ -61,7 +67,8 @@ namespace SimplAP.SDK.Core.Dto
                    DetectedFaces.WasProcessingPerformed ||
                    RollAngle.WasProcessingPerformed ||
                    WasCardLostOrStolen.WasProcessingPerformed ||
-                   DetectedBarcode.WasProcessingPerformed;
+                   DetectedBarcode.WasProcessingPerformed ||
+                   DetectedCheckboxes.WasProcessingPerformed;
         }
     }
 }

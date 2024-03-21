@@ -102,6 +102,25 @@ namespace SimplAP.SDK.Core.Services
                     formData.Add(genericScannerFieldsToUse, "disableObjectSegmentation");
                 }
 
+                if (input.ProcessesToRun.Contains(Enums.ImageAIProcessingType.CheckboxDetection) && 
+                    input.CheckboxesToDetect != null &&
+                    input.CheckboxesToDetect.Any())
+                {
+                    if (!input.CheckboxesToDetect.All(x => !string.IsNullOrEmpty(x.Id)))
+                    {
+                        var badCheckbox = input.CheckboxesToDetect.First(x => !string.IsNullOrEmpty(x.Id));
+                        throw new ArgumentException($"Missing checkbox Id. pattern: {badCheckbox.CheckboxMatchingRegex}");
+                    }
+
+                    if (!input.CheckboxesToDetect.All(x => !string.IsNullOrEmpty(x.CheckboxMatchingRegex)))
+                    {
+                        var badCheckbox = input.CheckboxesToDetect.First(x => !string.IsNullOrEmpty(x.CheckboxMatchingRegex));
+                        throw new ArgumentException($"Missing regex pattern for checkbox detection. If you want to specify matching patters don't forget to fill in the regex pattern. CHeckboxId: {badCheckbox.Id}");
+                    }
+                    StringContent checkboxes = new StringContent(JsonConvert.SerializeObject(input.CheckboxesToDetect));
+                    formData.Add(checkboxes, "checkboxesToDetect");
+                }
+
                 using (var imageStreamContent = new StreamContent(new MemoryStream(input.ImageData)))
                 {
                     imageStreamContent.Headers.Add("Content-Type", "application/octet-stream");

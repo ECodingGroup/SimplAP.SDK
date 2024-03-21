@@ -7,10 +7,9 @@
         /// </summary>
         public BBox BBox { get; set; }
         /// <summary>
-        /// The bounding boxes of the estimated optimal crop area.
-        /// Please be aware that if we are not able to calculate this then it will be null and BBox should be then used instead.
+        /// The bounding box of the suggested crop area
         /// </summary>
-        //public Bbox EstimatedOptimalCropBBox { get; set; }
+        public BBox SuggestedCropBBox { get; set; }
         /// <summary>
         /// The detected object category
         /// </summary>

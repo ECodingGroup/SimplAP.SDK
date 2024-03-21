@@ -12,6 +12,12 @@ namespace SimplAP.SDK.Core.Dto
         /// If the input file was not a multi page document, this value will be null
         /// </summary>
         public int? PageNo { get; set; }
+
+        /// <summary>
+        /// If the input file is a PDF file, the extraction file specific, dependent on the used DPI in Simple API. Therefore we attach the image file used for extraction
+        /// </summary>
+        public byte[] PDFImage { get; set; }
+
         /// <summary>
         /// The result of the image processing.
         /// There can be multiple entities as the result of processing or none. (For example multiple detected objects)

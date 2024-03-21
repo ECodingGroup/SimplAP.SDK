@@ -48,7 +48,16 @@ namespace SimplAP.SDK.Core.Dto.Shared
         public string Paint { get; set; }
         public int? NumOfSeats { get; set; }
         public int? MaxSpeed { get; set; }
-        public string IBAN { get; set; }
-        public decimal? VIGSK_PolicyId { get; set; }
+        public FormattedString IBAN { get; set; }
+        public decimal[] VIGSK_PolicyId { get; set; }
+
+        /// <summary>
+        /// This field is only for generic scanner fields
+        /// </summary>
+        public string IdentityCardNumber { get; set; }
+        public string LicensePlate { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public FormattedString PhoneNumber { get; set; }
+        public string Email { get; set; }
     }
 }

@@ -36,6 +36,10 @@ namespace SimplAP.SDK.Core.Enums
         /// <summary>
         /// Extracts the value of a 2D Or 1D barcode (Supported formats: UPC, EAN, CODE 39, CODE 93, CODE 128, Codabar, MSI, Plessey, QR Code, Data Matrix, PDF417, Aztec)
         /// </summary>
-        BarcodeReader = 8
+        BarcodeReader = 8,
+        /// <summary>
+        /// Detects checkboxes in a standardized paper form where the check fields are visible as crosses within a square box. 
+        /// </summary>
+        CheckboxDetection = 9
     }
 }

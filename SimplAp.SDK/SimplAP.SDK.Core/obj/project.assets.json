@@ -223,24 +223,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\TomášFilip\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\TomasFilip\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Dev\\ECoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\SimplAP.SDK.Core.csproj",
+      "projectUniqueName": "C:\\dev\\ecoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\SimplAP.SDK.Core.csproj",
       "projectName": "SimplAP.SDK.Core",
-      "projectPath": "C:\\Dev\\ECoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\SimplAP.SDK.Core.csproj",
-      "packagesPath": "C:\\Users\\TomášFilip\\.nuget\\packages\\",
-      "outputPath": "C:\\Dev\\ECoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\obj\\",
+      "projectPath": "C:\\dev\\ecoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\SimplAP.SDK.Core.csproj",
+      "packagesPath": "C:\\Users\\TomasFilip\\.nuget\\packages\\",
+      "outputPath": "C:\\dev\\ecoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Dev\\ECoding\\SimplAP.SDK\\SimplAp.SDK\\.nuget\\NuGet.Config",
-        "C:\\Users\\TomášFilip\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\dev\\ecoding\\SimplAP.SDK\\SimplAp.SDK\\.nuget\\NuGet.Config",
+        "C:\\Users\\TomasFilip\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

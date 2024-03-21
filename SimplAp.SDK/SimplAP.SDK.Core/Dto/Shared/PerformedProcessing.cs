@@ -37,7 +37,28 @@ namespace SimplAP.SDK.Core.Dto.Shared
             Result = result;
             WasProcessingPerformed = wasProcessingPerformed;
 
-            if (result == null)
+            if (result != null)
+            { WasProcessingSuccessful = true; }
+        }
+
+        public bool WasProcessingPerformed { get; set; }
+        public bool WasProcessingSuccessful { get; set; }
+        public TProcessedItem Result { get; set; }
+        public ImageAIProcessingType ProcessingType { get; set; }
+
+    }
+
+    public class PerformedProcessing<TProcessedItem, T, TKey>
+    where T : class
+    where TProcessedItem : IReadOnlyDictionary<TKey, T>
+    {
+        public PerformedProcessing(TProcessedItem result, ImageAIProcessingType processingType, bool wasProcessingPerformed = false)
+        {
+            ProcessingType = processingType;
+            Result = result;
+            WasProcessingPerformed = wasProcessingPerformed;
+
+            if (result != null)
             { WasProcessingSuccessful = true; }
         }
 
