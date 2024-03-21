@@ -8,6 +8,7 @@ using SimplAP.SDK.Core.Dto;
 using System.IO;
 using SimplAP.SDK.Core.Exceptions;
 using System.Net;
+using SimplAP.SDK.Core.ContractResolvers;
 
 namespace SimplAP.SDK.Core.Services
 {
@@ -47,6 +48,8 @@ namespace SimplAP.SDK.Core.Services
             { throw new SimplAPAuthException("Forbidden, looks like your token doesn't have access to this service. You can set the permissions in the https://api.simplap.com user management screens."); }
             else if (response.StatusCode == HttpStatusCode.InternalServerError)
             { throw new SimplAPProcessingException($"Internal Server Error, please contact us at support@simplap.com, Response: {responseString}"); }
+            else if (response.StatusCode != HttpStatusCode.BadRequest)
+            { throw new SimplAPProcessingException($"Bad request, please verify your input parameters, Response: {responseString}"); }
             else if (response.StatusCode != HttpStatusCode.OK)
             { throw new SimplAPProcessingException($"Unexpected issue, Status code: {response.StatusCode}, please contact us at support@simplap.com, Response: {responseString}"); }
 
@@ -57,8 +60,8 @@ namespace SimplAP.SDK.Core.Services
             {
                 return responseString == null ? null : JsonConvert.DeserializeObject<T>(responseString);
             }
-            catch
-            { throw new SimplAPProcessingException($"There has been an error deserializing the response. Please contact us at support@simplap.com. Response: {responseString}"); }
+            catch(Exception ex)
+            { throw new SimplAPProcessingException($"There has been an error deserializing the response. Please contact us at support@simplap.com. Response: {responseString}", ex); }
         }
 
         /// <summary>
@@ -99,7 +102,7 @@ namespace SimplAP.SDK.Core.Services
                 if (input.GenericScannerFieldsToUse != null && input.GenericScannerFieldsToUse.Any())
                 {
                     StringContent genericScannerFieldsToUse = new StringContent(string.Join(",", input.GenericScannerFieldsToUse.ToArray()).ToLower());
-                    formData.Add(genericScannerFieldsToUse, "disableObjectSegmentation");
+                    formData.Add(genericScannerFieldsToUse, "genericScannerFieldsToUse");
                 }
 
                 if (input.ProcessesToRun.Contains(Enums.ImageAIProcessingType.CheckboxDetection) && 
@@ -117,7 +120,9 @@ namespace SimplAP.SDK.Core.Services
                         var badCheckbox = input.CheckboxesToDetect.First(x => !string.IsNullOrEmpty(x.CheckboxMatchingRegex));
                         throw new ArgumentException($"Missing regex pattern for checkbox detection. If you want to specify matching patters don't forget to fill in the regex pattern. CHeckboxId: {badCheckbox.Id}");
                     }
-                    StringContent checkboxes = new StringContent(JsonConvert.SerializeObject(input.CheckboxesToDetect));
+                    var jsonSettings = new JsonSerializerSettings()
+                    { ContractResolver = new LowercaseContractResolver() };
+                    StringContent checkboxes = new StringContent(JsonConvert.SerializeObject(input.CheckboxesToDetect, jsonSettings));
                     formData.Add(checkboxes, "checkboxesToDetect");
                 }
 

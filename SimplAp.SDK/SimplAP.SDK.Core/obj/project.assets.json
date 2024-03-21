@@ -235,7 +235,6 @@
       "outputPath": "C:\\dev\\ecoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\dev\\ecoding\\SimplAP.SDK\\SimplAp.SDK\\.nuget\\NuGet.Config",
         "C:\\Users\\TomasFilip\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -243,6 +242,8 @@
         "netstandard2.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\nugetpackages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
