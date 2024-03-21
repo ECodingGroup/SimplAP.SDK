@@ -14,7 +14,7 @@ namespace SimplAP.SDK.Core.Services
 {
     public class SimplAPService
     {
-        private readonly string SimpleAPIBaseAddress = "api.simplap.com";
+        private readonly string SimpleAPIBaseAddress = "localhost:44398";
         private readonly string SimpleAPIAIEndpoint = "https://{0}/api/app/a-i";
         private readonly string SimpleAPIStatsEndpoint = "https://{0}/api/app/stats";
 
@@ -48,7 +48,7 @@ namespace SimplAP.SDK.Core.Services
             { throw new SimplAPAuthException("Forbidden, looks like your token doesn't have access to this service. You can set the permissions in the https://api.simplap.com user management screens."); }
             else if (response.StatusCode == HttpStatusCode.InternalServerError)
             { throw new SimplAPProcessingException($"Internal Server Error, please contact us at support@simplap.com, Response: {responseString}"); }
-            else if (response.StatusCode != HttpStatusCode.BadRequest)
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
             { throw new SimplAPProcessingException($"Bad request, please verify your input parameters, Response: {responseString}"); }
             else if (response.StatusCode != HttpStatusCode.OK)
             { throw new SimplAPProcessingException($"Unexpected issue, Status code: {response.StatusCode}, please contact us at support@simplap.com, Response: {responseString}"); }
