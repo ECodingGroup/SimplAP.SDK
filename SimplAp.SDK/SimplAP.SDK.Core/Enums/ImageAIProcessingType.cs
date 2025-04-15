@@ -40,6 +40,11 @@ namespace SimplAP.SDK.Core.Enums
         /// <summary>
         /// Detects checkboxes in a standardized paper form where the check fields are visible as crosses within a square box. 
         /// </summary>
-        CheckboxDetection = 9
+        CheckboxDetection = 9,
+        /// <summary>
+        /// Detects if the image contains a signature and the probability of it being a signature
+        /// </summary>
+        SignatureDetection = 10
+
     }
 }

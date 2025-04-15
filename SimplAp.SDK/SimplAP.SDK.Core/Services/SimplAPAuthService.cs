@@ -29,14 +29,10 @@ namespace SimplAP.SDK.Core.Services
 
         public SimplAPAuthService(string userName, string password, string clientSecret, string tenant)
         {
-            if(string.IsNullOrEmpty(userName))
-            { throw new ArgumentNullException(nameof(userName)); }
-            if (string.IsNullOrEmpty(password))
-            { throw new ArgumentNullException(nameof(password)); }
-            if (string.IsNullOrEmpty(clientSecret))
-            { throw new ArgumentNullException(nameof(clientSecret)); }
-            if (string.IsNullOrEmpty(tenant))
-            { throw new ArgumentNullException(nameof(tenant)); }
+            if (string.IsNullOrEmpty(userName)) throw new ArgumentNullException(nameof(userName));
+            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
+            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
+            if (string.IsNullOrEmpty(tenant)) throw new ArgumentNullException(nameof(tenant));
 
             _userName = userName;
             _password = password;
@@ -46,12 +42,14 @@ namespace SimplAP.SDK.Core.Services
 
         public async Task<SimplAPAccessToken> GetAccessTokenAsync()
         {
+#if NET48
+            // --- .NET Framework 4.8 code path (traditional using) ---
             using (var client = new HttpClient())
             {
                 var formParams = new Dictionary<string, string>
                 {
                     { "grant_type", "password" },
-                    { "username", _userName},
+                    { "username", _userName },
                     { "password", _password },
                     { "client_id", _clientId },
                     { "scope", _scope },
@@ -61,23 +59,90 @@ namespace SimplAP.SDK.Core.Services
 
                 using (var content = new FormUrlEncodedContent(formParams.AsEnumerable()))
                 {
-                    HttpResponseMessage response = await client.PostAsync(_tokenUrl, content);
-                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var request = new HttpRequestMessage(HttpMethod.Post, _tokenUrl) { Content = content };
+                    Task<HttpResponseMessage> sendTask = client.SendAsync(request);
+                    Task.WaitAll(sendTask);
+                    HttpResponseMessage response = sendTask.Result;
+
+                    Task<string> readContentTask = response.Content.ReadAsStringAsync();
+                    Task.WaitAll(readContentTask);
+                    var responseContent = readContentTask.Result;
 
                     try
-                    { response.EnsureSuccessStatusCode(); }
+                    {
+                        response.EnsureSuccessStatusCode();
+                    }
                     catch
-                    { throw new SimplAPAuthException($"Unable to Generate Token, please check your settings. Status: {response.StatusCode}, Response: {responseContent}"); }
+                    {
+                        throw new SimplAPAuthException(
+                            $"Unable to Generate Token, please check your settings. Status: {response.StatusCode}, Response: {responseContent}"
+                        );
+                    }
 
-                    if (string.IsNullOrEmpty(responseContent)) throw new SimplAPAuthException("Unable to read token response. The API Could be down. Please contact support at support@simplap.com");
+                    if (string.IsNullOrEmpty(responseContent))
+                    {
+                        throw new SimplAPAuthException("Unable to read token response. The API could be down. Please contact support at support@simplap.com");
+                    }
 
                     try
-                    { return JsonConvert.DeserializeObject<SimplAPAccessToken>(responseContent, SerializerSettings); }
+                    {
+                        return JsonConvert.DeserializeObject<SimplAPAccessToken>(responseContent, SerializerSettings);
+                    }
                     catch (Exception ex)
-                    { throw new SimplAPAuthException($"Unable to deserialize token response. Token Response: {responseContent}, Error: {ex.Message}", ex); }
+                    {
+                        throw new SimplAPAuthException(
+                            $"Unable to deserialize token response. Token Response: {responseContent}, Error: {ex.Message}",
+                            ex
+                        );
+                    }
                 }
             }
-            
+#else
+            // --- .NET 7, 8, 9 code path (modern using declarations) ---
+            using var client = new HttpClient();
+            var formParams = new Dictionary<string, string>
+            {
+                { "grant_type", "password" },
+                { "username", _userName },
+                { "password", _password },
+                { "client_id", _clientId },
+                { "scope", _scope },
+                { "client_secret", _clientSecret },
+                { "__tenant", _tenant }
+            };
+
+            using var content = new FormUrlEncodedContent(formParams.AsEnumerable());
+            var response = await client.PostAsync(_tokenUrl, content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch
+            {
+                throw new SimplAPAuthException(
+                    $"Unable to Generate Token, please check your settings. Status: {response.StatusCode}, Response: {responseContent}"
+                );
+            }
+
+            if (string.IsNullOrEmpty(responseContent))
+            {
+                throw new SimplAPAuthException("Unable to read token response. The API could be down. Please contact support at support@simplap.com");
+            }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<SimplAPAccessToken>(responseContent, SerializerSettings);
+            }
+            catch (Exception ex)
+            {
+                throw new SimplAPAuthException(
+                    $"Unable to deserialize token response. Token Response: {responseContent}, Error: {ex.Message}",
+                    ex
+                );
+            }
+#endif
         }
     }
 }

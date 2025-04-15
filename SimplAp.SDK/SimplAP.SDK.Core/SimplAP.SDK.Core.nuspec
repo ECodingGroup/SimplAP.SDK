@@ -1,26 +1,56 @@
 <?xml version="1.0"?>
-<package >
-  <metadata>
-    <id>SimplAP.SDK.Core</id>
-    <version>3.3.2</version>
-    <title>SimplAP.SDK.Core</title>
-	<license type="expression">MIT</license>
-    <authors>Tomáš Filip</authors>
-    <owners>ECoding Slovakia s.r.o.</owners>
-    <projectUrl>https://github.com/ECodingGroup/SimplAP.SDK</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Nuget package contains SDK for integrating into Simpl AP AI services (api.simplap.com).</description>
-    <copyright>Copyright © ECoding Slovakia s.r.o. 2023</copyright>
-    <tags>SimplAP SimpleAPI AI ECoding</tags>
-	<readme>README-Nuget.md</readme>
-	<dependencies>
-		<group targetFramework=".NETStandard2.0">
-			<dependency id="Newtonsoft.Json" version="13.0.3" />
-		</group>
-	</dependencies>
-  </metadata>
-  <files>
-    <file src="bin\Release\netstandard2.0\SimplAP.SDK.Core.dll" target="lib\netstandard2.0\SimplAP.SDK.Core.dll" />
-	<file src="README-Nuget.md" target="" />
-  </files>
+<package>
+	<metadata>
+		<id>SimplAP.SDK.Core</id>
+		<version>4.0.0</version>
+		<title>SimplAP.SDK.Core</title>
+		<license type="expression">MIT</license>
+		<authors>Tomáš Filip</authors>
+		<owners>ECoding Slovakia s.r.o.</owners>
+		<projectUrl>https://github.com/ECodingGroup/SimplAP.SDK</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>
+			NuGet package containing an SDK for integrating with Simpl AP AI services (api.simplap.com).
+		</description>
+		<copyright>
+			Copyright © ECoding Slovakia s.r.o. 2025
+		</copyright>
+		<tags>SimplAP SimpleAPI AI ECoding</tags>
+		<readme>README-Nuget.md</readme>
+
+		<!-- Dependencies per target framework -->
+		<dependencies>
+			<!-- .NET Framework 4.8 -->
+			<group targetFramework=".NETFramework4.8">
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+				<!-- Typically, System.Net.Http is in-box for 4.8, so no extra dependency needed -->
+			</group>
+
+			<!-- .NET 7 -->
+			<group targetFramework=".NET7.0">
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+			</group>
+
+			<!-- .NET 8 -->
+			<group targetFramework=".NET8.0">
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+			</group>
+
+			<!-- .NET 9 -->
+			<group targetFramework=".NET9.0">
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+			</group>
+		</dependencies>
+	</metadata>
+
+	<files>
+		<!-- Output assemblies for each TFM -->
+		<file src="bin\Release\net48\SimplAP.SDK.Core.dll" target="lib\net48\SimplAP.SDK.Core.dll" />
+		<file src="bin\Release\net7.0\SimplAP.SDK.Core.dll" target="lib\net7.0\SimplAP.SDK.Core.dll" />
+		<file src="bin\Release\net8.0\SimplAP.SDK.Core.dll" target="lib\net8.0\SimplAP.SDK.Core.dll" />
+		<file src="bin\Release\net9.0\SimplAP.SDK.Core.dll" target="lib\net9.0\SimplAP.SDK.Core.dll" />
+
+		<!-- Include your README in the package root -->
+		<file src="README-Nuget.md" target="" />
+	</files>
 </package>

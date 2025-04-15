@@ -1,12 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "l546gPwpBrsdt504ZMeZzRPMbVrJDxhuKLgSCzxnOGLSrBenjUOgzodsJ8mC3P+dTCfjlgOAcYUZlGnX3B0p1A==",
+  "dgSpecHash": "JZoWBxKBm4c=",
   "success": true,
-  "projectFilePath": "C:\\dev\\ecoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\SimplAP.SDK.Core.csproj",
+  "projectFilePath": "C:\\Dev\\ECoding\\SimplAP.SDK\\SimplAp.SDK\\SimplAP.SDK.Core\\SimplAP.SDK.Core.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\TomasFilip\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Users\\TomasFilip\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
-    "C:\\Users\\TomasFilip\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+    "C:\\Users\\TomášFilip\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],
   "logs": []
 }

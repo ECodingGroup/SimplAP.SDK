@@ -34,6 +34,12 @@ namespace SimplAP.SDK.Core.Dto
         public IEnumerable<CheckboxDetectionInput> CheckboxesToDetect { get; set; }
 
         public AIModelType ModelType { get; internal set; }
+
+        /// <summary>
+        /// When scanning a PDF file, on the output you will receive the PDF file bytes if set to true.
+        /// True is the default value
+        /// </summary>
+        public bool ReturnPdfFileBytesOnOutput { get; set; } = true;
     }
 
 }

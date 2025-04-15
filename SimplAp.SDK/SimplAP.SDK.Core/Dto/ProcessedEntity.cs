@@ -20,6 +20,10 @@ namespace SimplAP.SDK.Core.Dto
         /// </summary>
         public PerformedProcessing<DetectedObject> DetectedObject { get; set; } = new PerformedProcessing<DetectedObject>(null, ImageAIProcessingType.Detection);
         /// <summary>
+        /// If the image contains a signature this result will contain information about the signature options
+        /// </summary>
+        public PerformedProcessing<SignatureDetectionResult> DetectedSignature { get; set; } = new PerformedProcessing<SignatureDetectionResult>(new SignatureDetectionResult { SignatureDetected = false, DetectedSignatureConfidence = 0 }, ImageAIProcessingType.SignatureDetection);
+        /// <summary>
         /// If image blur detection was enabled this property will contain a boolean information whether the related entity was blurred.
         /// If the related entity is a detected object, it will check for the detected object bluriness. 
         /// </summary>
